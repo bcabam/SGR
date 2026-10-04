@@ -34,6 +34,8 @@ try {
     // password_verify compara el texto que escribió el usuario con el hash seguro
     if ($admin && password_verify($password, $admin['password'])) {
         
+        // OWASP A07:2021 - Regenerar el ID de sesión para prevenir ataques de Fijación de Sesión
+        session_regenerate_id(true);
         $_SESSION['admin_id'] = $admin['id'];
         
         http_response_code(200);

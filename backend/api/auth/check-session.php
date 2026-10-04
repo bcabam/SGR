@@ -17,7 +17,9 @@ if (isset($_SESSION['admin_id'])) {
     http_response_code(200);
     echo json_encode(["autenticado" => true]);
 } else {
-    http_response_code(401);
+    // Devolvemos 200 para evitar el error rojo en la consola del navegador, 
+    // pero indicamos mediante JSON que no hay sesión activa.
+    http_response_code(200);
     echo json_encode(["autenticado" => false]);
 }
 ?>

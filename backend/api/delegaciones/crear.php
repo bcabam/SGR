@@ -43,8 +43,9 @@ if (!isset($datos["nombre"]) || !isset($datos["responsable"]) || !isset($datos["
     exit;
 }
 
-$nombre = trim($datos["nombre"]);
-$responsable = trim($datos["responsable"]);
+// OWASP A03:2021 - Sanitización estricta contra inyección de HTML/Scripts (XSS)
+$nombre = htmlspecialchars(strip_tags(trim($datos["nombre"])), ENT_QUOTES, 'UTF-8');
+$responsable = htmlspecialchars(strip_tags(trim($datos["responsable"])), ENT_QUOTES, 'UTF-8');
 $estado = trim($datos["estado"]);
 
 /* =========================================================
