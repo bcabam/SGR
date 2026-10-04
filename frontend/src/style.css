@@ -3,6 +3,9 @@
    Municipalidad de La Serena
    ========================================================= */
 
+/* --- IMPORTACIÓN DE FUENTE UNIVERSAL OUTFIT --- */
+@import url('https://fonts.googleapis.com/css2?family=Outfit:ital,wght@0,100..900;1,100..900&display=swap');
+
 /* =========================================================
    VARIABLES
    ========================================================= */
@@ -23,37 +26,39 @@
 }
 
 /* =========================================================
-   RESET
+   TIPOGRAFÍA GLOBAL Y RESET
    ========================================================= */
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+  font-family: 'Outfit', sans-serif;
 }
 
-html,
-body,
+html, 
+body, 
 #app {
   min-height: 100%;
 }
 
 body {
-  font-family: Arial, Helvetica, sans-serif;
   color: var(--gris-oscuro);
   background: var(--gris-fondo);
+  font-weight: 400; 
 }
 
-/* =========================================================
-   BOTONES GENERALES
-   ========================================================= */
+h1, h2, h3, h4, h5, h6, strong {
+  font-weight: 700;
+}
+
 button {
-  font-family: inherit;
   cursor: pointer;
   border: none;
+  font-family: inherit;
 }
 
 /* =========================================================
-   LOGIN
+   LOGIN & ANIMACIONES
    ========================================================= */
 .login-container {
   display: flex;
@@ -70,7 +75,7 @@ button {
 }
 
 .login-card {
-  background: rgba(255, 255, 255, 0.92);
+  background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(10px);
   padding: 2.5rem;
   border-radius: 12px;
@@ -78,6 +83,7 @@ button {
   width: 100%;
   max-width: 420px;
   border-top: 4px solid #ad0000;
+  transition: all 0.5s ease;
 }
 
 .login-header {
@@ -85,19 +91,24 @@ button {
   margin-bottom: 2rem;
 }
 
+.login-header h2,
+.login-subtitle,
+.login-institution {
+  font-weight: 700;
+  font-style: normal;
+}
+
 .login-header h2 {
-  font-size: 2rem;
+  font-size: 2.2rem;
   color: #ad0000;
   margin: 0;
-  font-weight: 700;
   letter-spacing: 1px;
 }
 
 .login-subtitle {
-  font-size: 0.95rem;
+  font-size: 1.1rem;
   color: #444;
   margin: 0.3rem 0 0.1rem 0;
-  font-weight: 600;
 }
 
 .login-institution {
@@ -111,12 +122,62 @@ button {
   margin-bottom: 1.25rem;
 }
 
-.login-card label {
+.login-card label[for="usuario"] {
   display: block;
-  font-size: 0.85rem;
-  font-weight: 600;
+  font-size: 0.95rem;
   color: #333;
   margin-bottom: 0.4rem;
+  font-weight: 400;
+  font-style: italic;
+}
+
+#usuario::placeholder {
+  font-weight: 500;
+  font-style: italic;
+}
+
+.login-card label[for="password"] {
+  display: block;
+  font-size: 0.95rem;
+  color: #333;
+  margin-bottom: 0.4rem;
+  font-weight: 400;
+  font-style: normal;
+}
+
+#password::placeholder {
+  font-weight: 500;
+  font-style: italic;
+}
+
+.login-btn {
+  width: 100%;
+  padding: 0.85rem;
+  background-color: #ad0000;
+  color: white;
+  border-radius: 6px;
+  font-size: 1.05rem;
+  margin-top: 0.5rem;
+  font-weight: 600;
+  font-style: italic;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.login-btn .dots span {
+  font-style: normal !important;
+}
+
+.login-btn:hover:not(:disabled) {
+  background-color: #8c0000;
+}
+
+.login-btn:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.login-btn:disabled {
+  opacity: 0.85;
+  cursor: default;
 }
 
 .input-with-icon {
@@ -135,10 +196,10 @@ button {
 
 .input-with-icon input {
   width: 100%;
-  padding: 0.75rem 0.75rem 0.75rem 2.5rem;
+  padding: 0.85rem 0.85rem 0.85rem 2.5rem;
   border: 1px solid #ccc;
   border-radius: 6px;
-  font-size: 0.95rem;
+  font-size: 1rem;
   transition: all 0.2s ease;
   background-color: #fff;
 }
@@ -149,85 +210,224 @@ button {
   box-shadow: 0 0 0 3px rgba(173, 0, 0, 0.15);
 }
 
-.login-btn {
-  width: 100%;
-  padding: 0.85rem;
-  background-color: #ad0000;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background-color 0.2s ease, transform 0.1s ease;
-  margin-top: 0.5rem;
+.step-hidden {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  margin-bottom: 0 !important;
+  transition: max-height 0.5s ease, opacity 0.4s ease, margin-bottom 0.5s ease;
 }
 
-.login-btn:hover {
-  background-color: #8c0000;
+.step-visible {
+  max-height: 120px;
+  opacity: 1;
+  margin-bottom: 1.25rem !important;
+  transition: max-height 0.5s ease, opacity 0.6s ease 0.1s, margin-bottom 0.5s ease;
 }
 
-.login-btn:active {
-  transform: scale(0.98);
-}
-
-.error-message {
-  color: #ad0000;
-  font-size: 0.85rem;
-  margin-bottom: 1rem;
+.login-footer {
+  margin-top: 2rem;
+  padding-top: 1.2rem;
+  border-top: 1px solid var(--gris-borde);
   text-align: center;
+}
+
+.login-footer .love {
+  font-size: 0.85rem;
+  margin-bottom: 4px;
+  color: var(--gris-oscuro);
   font-weight: 500;
 }
 
+.login-footer .secret {
+  font-size: 0.85rem;
+  margin-bottom: 4px;
+  color: transparent;
+  user-select: text;
+}
+
+.login-footer .secret::selection {
+  color: #000;
+  background: #F9DCDC;
+}
+
+.login-footer .team {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--rojo-muni);
+  margin-bottom: 2px;
+}
+
+.login-footer .role {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 500;
+  color: var(--gris-texto);
+}
+
 /* =========================================================
-   FORMULARIOS
+   ERRORES, ALERTAS Y ANIMACIONES
+   ========================================================= */
+.error-message {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: var(--rojo-claro);
+  color: var(--rojo-oscuro);
+  border-left: 4px solid var(--rojo-muni);
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  
+  /* Animación base para la transición suave */
+  padding: 12px 16px;
+  max-height: 100px;
+  opacity: 1;
+  margin-bottom: 18px;
+  overflow: hidden;
+  transition: all 0.4s ease;
+}
+
+/* ESTA ES LA CLASE QUE FALTABA PARA COLAPSAR EL ERROR */
+.error-message.oculto {
+  max-height: 0;
+  opacity: 0;
+  margin-bottom: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  border-width: 0;
+}
+
+.shake-icon {
+  animation: shake-alert 0.4s ease-in-out;
+  width: 18px;
+  height: 18px;
+  stroke-width: 2.2;
+}
+
+@keyframes shake-alert {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-5px); }
+  40%, 80% { transform: translateX(5px); }
+}
+
+.logout-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background-color: var(--rojo-muy-oscuro);
+  background-image: radial-gradient(circle at center, var(--rojo-oscuro) 0%, var(--rojo-muy-oscuro) 100%);
+  color: white;
+  text-align: center;
+}
+
+.logout-screen h2 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 15px;
+  color: white;
+}
+
+.logout-screen p {
+  font-size: 1.3rem;
+  font-weight: 500;
+  color: var(--rojo-claro);
+  opacity: 0.9;
+}
+
+.dots span {
+  animation: dot-blink 1.4s infinite both;
+}
+
+.dots span:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.dots span:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes dot-blink {
+  0% { opacity: 0; transform: translateY(0); }
+  20% { opacity: 1; transform: translateY(-3px); }
+  100% { opacity: 0; transform: translateY(0); }
+}
+
+/* =========================================================
+   FORMULARIOS (SISTEMA CRUD)
    ========================================================= */
 .form-group {
-  margin-bottom: 20px;
+  margin-bottom: 22px;
 }
 
 .form-group label {
   display: block;
-  margin-bottom: 7px;
+  margin-bottom: 8px;
   color: var(--gris-oscuro);
-  font-size: 14px;
-  font-weight: bold;
+  font-size: 15px;
+  font-weight: 600;
 }
 
-.form-group input,
+.input-prefix-group {
+  display: flex;
+  align-items: stretch;
+  border: 1px solid var(--gris-borde);
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--blanco);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.input-prefix-group:focus-within {
+  border-color: var(--rojo-muni);
+  box-shadow: 0 0 0 3px rgba(173, 0, 0, 0.12);
+}
+
+.input-prefix {
+  display: flex;
+  align-items: center;
+  background: #f8f9fa;
+  padding: 0 16px;
+  color: var(--gris-texto);
+  font-weight: 700;
+  font-size: 15px;
+  border-right: 1px solid var(--gris-borde);
+  user-select: none;
+}
+
+.input-prefix-group input {
+  flex: 1;
+  border: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+}
+
+.form-group input, 
 .form-group select {
   width: 100%;
-  padding: 12px;
+  padding: 14px;
   border: 1px solid var(--gris-borde);
-  border-radius: 5px;
+  border-radius: 8px;
   background: var(--blanco);
   color: var(--gris-oscuro);
-  font-family: inherit;
   font-size: 15px;
+  font-weight: 500;
   outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-.form-group input:focus,
+.form-group input:focus, 
 .form-group select:focus {
   border-color: var(--rojo-muni);
   box-shadow: 0 0 0 3px rgba(173, 0, 0, 0.12);
 }
 
 /* =========================================================
-   MENSAJE DE ERROR
-   ========================================================= */
-.error-message {
-  margin-bottom: 18px;
-  padding: 11px 13px;
-  border-left: 4px solid var(--rojo-muni);
-  background: var(--rojo-claro);
-  color: var(--rojo-oscuro);
-  border-radius: 3px;
-  font-size: 14px;
-}
-
-/* =========================================================
-   DASHBOARD
+   DASHBOARD - HEADER & SIDEBAR
    ========================================================= */
 .dashboard {
   min-height: 100vh;
@@ -236,9 +436,6 @@ button {
   background: var(--gris-fondo);
 }
 
-/* =========================================================
-   BARRA SUPERIOR
-   ========================================================= */
 .dashboard-header {
   height: 82px;
   min-height: 82px;
@@ -253,9 +450,6 @@ button {
   z-index: 10;
 }
 
-/* =========================================================
-   LOGO MUNICIPAL
-   ========================================================= */
 .header-brand {
   display: flex;
   align-items: center;
@@ -279,9 +473,6 @@ button {
   object-fit: contain;
 }
 
-/* =========================================================
-   INFORMACIÓN DEL SISTEMA
-   ========================================================= */
 .brand-info {
   display: flex;
   flex-direction: column;
@@ -292,18 +483,16 @@ button {
 
 .brand-info strong {
   color: white;
-  font-size: 15px;
-  font-weight: bold;
+  font-size: 16px;
+  font-weight: 700;
 }
 
 .brand-info span {
   color: #F9DCDC;
-  font-size: 12px;
+  font-size: 13px;
+  font-weight: 400;
 }
 
-/* =========================================================
-   USUARIO
-   ========================================================= */
 .header-user {
   display: flex;
   align-items: center;
@@ -326,30 +515,22 @@ button {
   fill: none;
   stroke: white;
   stroke-width: 1.8;
-  stroke-linecap: round;
-  stroke-linejoin: round;
 }
 
-.user-info {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  margin-right: 12px;
-}
-
-.user-info strong {
+.user-account-link {
   color: white;
-  font-size: 13px;
+  text-decoration: none;
+  font-size: 15px;
+  font-weight: 500;
+  margin-right: 15px;
+  transition: color 0.2s ease;
 }
 
-.user-info span {
-  color: #F9DCDC;
-  font-size: 11px;
+.user-account-link:hover {
+  color: var(--rojo-claro);
+  text-decoration: underline;
 }
 
-/* =========================================================
-   CERRAR SESIÓN
-   ========================================================= */
 .logout-button {
   display: flex;
   align-items: center;
@@ -359,7 +540,8 @@ button {
   border-radius: 4px;
   background: transparent;
   color: white;
-  font-size: 12px;
+  font-size: 13px;
+  font-weight: 600;
   transition: 0.2s ease;
 }
 
@@ -374,13 +556,9 @@ button {
   fill: none;
   stroke: currentColor;
   stroke-width: 2;
-  stroke-linecap: round;
-  stroke-linejoin: round;
 }
 
-/* =========================================================
-   ESTRUCTURA PRINCIPAL Y BARRA LATERAL (CORREGIDO)
-   ========================================================= */
+/* --- SIDEBAR --- */
 .dashboard-layout {
   flex: 1;
   display: flex;
@@ -395,11 +573,10 @@ button {
   color: white;
   box-shadow: 2px 0 8px rgba(0, 0, 0, 0.12);
   transition: width 0.25s ease;
-  z-index: 50; /* Necesario para que los tooltips se vean por encima */
+  z-index: 50; 
 }
 
-/* Evita que los textos rompan el diseño al animar la barra */
-.sidebar .menu-text,
+.sidebar .menu-text, 
 .sidebar .menu-title {
   white-space: nowrap;
   overflow: hidden;
@@ -413,7 +590,6 @@ button {
   transition: width 0.25s ease;
 }
 
-/* ---------- Botón de Expandir/Contraer ---------- */
 .sidebar-toggle-container {
   display: flex;
   justify-content: flex-end;
@@ -445,9 +621,6 @@ button {
   stroke-width: 2;
 }
 
-/* =========================================================
-   SECCIONES Y NAVEGACIÓN DEL MENÚ
-   ========================================================= */
 .sidebar-nav {
   display: flex;
   flex-direction: column;
@@ -466,9 +639,10 @@ button {
   display: block;
   margin: 0 12px 7px;
   color: #D99A9A;
-  font-size: 10px;
-  font-weight: bold;
+  font-size: 11px;
+  font-weight: 700;
   letter-spacing: 0.8px;
+  text-transform: uppercase;
 }
 
 .menu-item {
@@ -483,10 +657,10 @@ button {
   background: transparent;
   color: white;
   text-align: left;
-  font-size: 14px;
-  font-weight: normal;
+  font-size: 15px;
+  font-weight: 500;
   transition: background-color 0.2s ease, color 0.2s ease;
-  position: relative; /* Para los tooltips */
+  position: relative;
 }
 
 .menu-item:hover {
@@ -496,7 +670,7 @@ button {
 .menu-item.active {
   background: var(--rojo-muni);
   color: white;
-  font-weight: bold;
+  font-weight: 700;
   box-shadow: inset 3px 0 0 var(--naranja-muni);
 }
 
@@ -515,31 +689,24 @@ button {
   fill: none;
   stroke: currentColor;
   stroke-width: 1.8;
-  stroke-linecap: round;
-  stroke-linejoin: round;
 }
 
-/* =========================================================
-   BARRA CONTRAÍDA
-   ========================================================= */
+/* --- BARRA CONTRAÍDA --- */
 .sidebar.collapsed {
   width: 72px;
 }
 
-.sidebar.collapsed .menu-title {
+.sidebar.collapsed .menu-title, 
+.sidebar.collapsed .menu-text {
   opacity: 0;
   height: 0;
   margin: 0;
-}
-
-.sidebar.collapsed .menu-text {
   display: none;
 }
 
 .sidebar.collapsed .menu-item {
   justify-content: center;
-  padding-left: 0;
-  padding-right: 0;
+  padding: 0;
   gap: 0;
 }
 
@@ -563,9 +730,6 @@ button {
   margin-bottom: 12px;
 }
 
-/* =========================================================
-   TOOLTIPS PERSONALIZADOS (MODO CONTRAÍDO)
-   ========================================================= */
 .sidebar.collapsed .menu-item::after {
   content: attr(data-tooltip);
   position: absolute;
@@ -577,8 +741,8 @@ button {
   color: var(--blanco);
   padding: 7px 12px;
   border-radius: 5px;
-  font-size: 13px;
-  font-weight: bold;
+  font-size: 14px;
+  font-weight: 600;
   white-space: nowrap;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
   opacity: 0;
@@ -604,19 +768,15 @@ button {
   z-index: 100;
 }
 
-.sidebar.collapsed .menu-item:hover::after {
+.sidebar.collapsed .menu-item:hover::after, 
+.sidebar.collapsed .menu-item:hover::before {
   opacity: 1;
   visibility: visible;
   transform: translateY(-50%) translateX(0);
 }
 
-.sidebar.collapsed .menu-item:hover::before {
-  opacity: 1;
-  visibility: visible;
-}
-
 /* =========================================================
-   RESTO DE LA INTERFAZ (PÁGINA, BOTONES, CRUD)
+   ELEMENTOS DE PÁGINA
    ========================================================= */
 .page-header {
   display: flex;
@@ -629,18 +789,22 @@ button {
   display: block;
   margin-bottom: 6px;
   color: var(--gris);
-  font-size: 12px;
+  font-size: 13px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .page-header h2 {
   margin-bottom: 6px;
   color: var(--rojo-oscuro);
-  font-size: 27px;
+  font-size: 30px;
 }
 
 .page-header p {
   color: var(--gris-texto);
-  font-size: 14px;
+  font-size: 16px;
+  font-weight: 400;
 }
 
 .primary-button {
@@ -652,8 +816,8 @@ button {
   border-radius: 5px;
   background: var(--rojo-muni);
   color: white;
-  font-size: 13px;
-  font-weight: bold;
+  font-size: 15px;
+  font-weight: 700;
   transition: 0.2s ease;
 }
 
@@ -661,6 +825,21 @@ button {
   background: var(--rojo-oscuro);
 }
 
+.secondary-button {
+  padding: 11px 18px;
+  border: 1px solid var(--gris-borde);
+  border-radius: 5px;
+  background: white;
+  color: var(--gris-texto);
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.secondary-button:hover {
+  background: #F2F2F2;
+}
+
+/* Dashboard Cards */
 .dashboard-cards {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -698,8 +877,6 @@ button {
   fill: none;
   stroke: currentColor;
   stroke-width: 1.8;
-  stroke-linecap: round;
-  stroke-linejoin: round;
 }
 
 .dashboard-card div:last-child {
@@ -710,12 +887,15 @@ button {
 
 .dashboard-card span {
   color: var(--gris-texto);
-  font-size: 12px;
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .dashboard-card strong {
   color: var(--gris-oscuro);
-  font-size: 25px;
+  font-size: 26px;
 }
 
 .welcome-panel {
@@ -729,39 +909,49 @@ button {
 .welcome-panel h3 {
   margin-bottom: 8px;
   color: var(--rojo-oscuro);
-  font-size: 18px;
+  font-size: 22px;
 }
 
 .welcome-panel p {
   color: var(--gris-texto);
-  font-size: 14px;
+  font-size: 16px;
+  font-weight: 400;
 }
 
+/* =========================================================
+   CRUD TABLES (DISEÑO MODERNO)
+   ========================================================= */
 .crud-container {
   background: white;
-  border: 1px solid var(--gris-borde);
-  border-radius: 6px;
-  box-shadow: var(--sombra);
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.04);
   overflow: hidden;
+  margin-bottom: 30px;
 }
 
 .crud-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 20px 22px;
-  border-bottom: 1px solid var(--gris-borde);
+  padding: 24px 28px;
+  border-bottom: 1px solid #f0f0f0;
 }
 
 .crud-header h3 {
   margin-bottom: 4px;
   color: var(--gris-oscuro);
-  font-size: 17px;
+  font-size: 20px;
+  font-weight: 700;
 }
 
 .crud-header span {
   color: var(--gris);
-  font-size: 12px;
+  font-size: 14px;
+  font-weight: 500;
+  background: #f4f4f4;
+  padding: 4px 10px;
+  border-radius: 20px;
 }
 
 .table-wrapper {
@@ -771,33 +961,38 @@ button {
 
 .crud-table {
   width: 100%;
-  border-collapse: collapse;
+  border-collapse: separate;
+  border-spacing: 0;
 }
 
-.crud-table thead {
-  background: #F7F7F7;
-}
-
-.crud-table th {
-  padding: 13px 18px;
-  border-bottom: 2px solid var(--gris-borde);
-  color: var(--gris-texto);
+.crud-table thead th {
+  background: #fafbfc;
+  padding: 16px 28px;
+  border-bottom: 2px solid #eaeaea;
+  color: #888;
   text-align: left;
-  font-size: 11px;
-  font-weight: bold;
+  font-size: 12px;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.4px;
+  letter-spacing: 0.8px;
 }
 
-.crud-table td {
-  padding: 15px 18px;
-  border-bottom: 1px solid var(--gris-borde);
+.crud-table tbody td {
+  padding: 18px 28px;
+  border-bottom: 1px solid #f4f4f4;
   color: var(--gris-oscuro);
-  font-size: 14px;
+  font-size: 15px;
+  font-weight: 500;
+  vertical-align: middle;
+}
+
+.crud-table tbody tr {
+  transition: background-color 0.2s ease;
 }
 
 .crud-table tbody tr:hover {
-  background: #FCF5F5;
+  background: #fdfdfd;
+  box-shadow: inset 4px 0 0 var(--rojo-muni);
 }
 
 .crud-table tbody tr:last-child td {
@@ -805,59 +1000,16 @@ button {
 }
 
 .status-badge {
-  display: inline-block;
-  padding: 5px 10px;
-  border-radius: 20px;
-  background: #E8F5E9;
-  color: #2E7D32;
-  font-size: 11px;
-  font-weight: bold;
-}
-
-.table-actions {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.edit-button,
-.delete-button {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
-  padding: 7px 10px;
-  border-radius: 4px;
-  color: white;
-  font-size: 11px;
-  font-weight: bold;
-  transition: 0.2s ease;
-}
-
-.edit-button {
-  background: var(--naranja-muni);
-}
-
-.edit-button:hover {
-  background: #A85100;
-}
-
-.delete-button {
-  background: var(--rojo-oscuro);
-}
-
-.delete-button:hover {
-  background: var(--rojo-muy-oscuro);
-}
-
-.edit-button svg,
-.delete-button svg {
-  width: 14px;
-  height: 14px;
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 1.8;
-  stroke-linecap: round;
-  stroke-linejoin: round;
+  justify-content: center;
+  padding: 6px 14px;
+  border-radius: 30px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  background: rgba(46, 125, 50, 0.1);
+  color: #2E7D32;
 }
 
 .empty-table {
@@ -866,6 +1018,60 @@ button {
   text-align: center;
 }
 
+/* Botones de Acción (Modernos) */
+.table-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.edit-button, 
+.delete-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  color: white;
+  transition: all 0.2s ease;
+}
+
+.edit-button span, 
+.delete-button span {
+  display: none;
+}
+
+.edit-button {
+  background: rgba(204, 102, 0, 0.1);
+  color: var(--naranja-muni);
+}
+
+.edit-button:hover {
+  background: var(--naranja-muni);
+  color: white;
+}
+
+.delete-button {
+  background: rgba(173, 0, 0, 0.1);
+  color: var(--rojo-muni);
+}
+
+.delete-button:hover {
+  background: var(--rojo-muni);
+  color: white;
+}
+
+.edit-button svg, 
+.delete-button svg {
+  width: 16px;
+  height: 16px;
+  stroke-width: 2.2;
+}
+
+/* =========================================================
+   ESTILOS DE FORMULARIO CARD
+   ========================================================= */
 .form-card {
   max-width: 700px;
   padding: 30px;
@@ -886,20 +1092,9 @@ button {
   width: auto;
 }
 
-.secondary-button {
-  padding: 11px 18px;
-  border: 1px solid var(--gris-borde);
-  border-radius: 5px;
-  background: white;
-  color: var(--gris-texto);
-  font-size: 13px;
-  font-weight: bold;
-}
-
-.secondary-button:hover {
-  background: #F2F2F2;
-}
-
+/* =========================================================
+   MÓDULOS VACÍOS (EN DESARROLLO)
+   ========================================================= */
 .empty-module {
   min-height: 300px;
   display: flex;
@@ -932,106 +1127,24 @@ button {
   fill: none;
   stroke: currentColor;
   stroke-width: 1.7;
-  stroke-linecap: round;
-  stroke-linejoin: round;
 }
 
 .empty-module h3 {
   margin-bottom: 8px;
   color: var(--gris-oscuro);
-  font-size: 18px;
+  font-size: 22px;
+  font-weight: 700;
 }
 
 .empty-module p {
   color: var(--gris-texto);
-  font-size: 14px;
-}
-
-/* =========================================================
-   RESPONSIVE
-   ========================================================= */
-@media (max-width: 1100px) {
-  .brand-info {
-    display: none;
-  }
-  .dashboard-cards {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-@media (max-width: 768px) {
-  :root {
-    --sidebar-width: 210px;
-  }
-  .dashboard-header {
-    height: 72px;
-    min-height: 72px;
-    padding: 0 18px;
-  }
-  .brand-logo {
-    width: 200px;
-  }
-  .dashboard-content {
-    padding: 22px;
-  }
-  .page-header {
-    align-items: flex-start;
-    gap: 15px;
-  }
-}
-
-@media (max-width: 600px) {
-  .dashboard-layout {
-    flex-direction: column;
-  }
-  .sidebar {
-    width: 100%;
-    min-width: 100%;
-  }
-  .sidebar-nav {
-    padding: 10px;
-  }
-  .menu-section {
-    margin-bottom: 8px;
-  }
-  .menu-title {
-    margin-top: 8px;
-  }
-  .menu-item {
-    display: inline-flex;
-    width: auto;
-    margin-right: 4px;
-  }
-  .dashboard-cards {
-    grid-template-columns: 1fr;
-  }
-  .page-header {
-    flex-direction: column;
-  }
-  .page-header .primary-button {
-    width: 100%;
-  }
-  .header-user {
-    gap: 5px;
-  }
-  .user-info {
-    display: none;
-  }
-  .logout-button span {
-    display: none;
-  }
-  .logout-button {
-    padding: 9px;
-  }
-  .brand-logo {
-    width: 180px;
-  }
+  font-size: 16px;
+  font-weight: 400;
 }
 
 /* =========================================================
    BUSCADOR DE DELEGACIONES
    ========================================================= */
-
 .search-container {
   padding: 0 24px 20px;
 }
@@ -1056,29 +1169,145 @@ button {
   width: 100%;
   height: 42px;
   padding: 0 14px 0 42px;
-
   border: 1px solid #d6d6d6;
   border-radius: 6px;
-
   background: #ffffff;
-
-  font-family: inherit;
-  font-size: 14px;
-
+  font-size: 15px;
+  font-weight: 500;
   outline: none;
-
-  transition:
-    border-color 0.2s ease,
-    box-shadow 0.2s ease;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .search-input-wrapper input:focus {
   border-color: #ad0000;
-
-  box-shadow:
-    0 0 0 3px rgba(173, 0, 0, 0.10);
+  box-shadow: 0 0 0 3px rgba(173, 0, 0, 0.10);
 }
 
 .search-input-wrapper input::placeholder {
   color: #999;
+}
+
+/* =========================================================
+   RESPONSIVE & ADAPTABILIDAD (MÓVIL, TABLETS Y PC)
+   ========================================================= */
+@media (max-width: 1100px) {
+  .brand-info { 
+    display: none; 
+  }
+  .dashboard-cards { 
+    grid-template-columns: repeat(2, minmax(0, 1fr)); 
+  }
+}
+
+@media (max-width: 768px) {
+  :root { 
+    --sidebar-width: 210px; 
+  }
+  .dashboard-header { 
+    height: 72px; 
+    min-height: 72px; 
+    padding: 0 15px; 
+  }
+  .brand-logo { 
+    width: 180px; 
+  }
+  .dashboard-content { 
+    padding: 20px 15px; 
+    max-width: 100vw; 
+  }
+  .page-header { 
+    flex-direction: column; 
+    align-items: flex-start; 
+    gap: 12px; 
+  }
+  .page-header .primary-button { 
+    width: 100%; 
+  }
+  .search-input-wrapper { 
+    max-width: 100%; 
+  }
+  .crud-header { 
+    flex-direction: column; 
+    align-items: flex-start; 
+    gap: 10px; 
+  }
+}
+
+@media (max-width: 600px) {
+  .dashboard-layout { 
+    flex-direction: column; 
+  }
+  .sidebar { 
+    width: 100%; 
+    min-width: 100%; 
+    height: auto; 
+    max-height: 1000px; 
+    overflow: hidden; 
+    transition: max-height 0.4s ease-in-out; 
+  }
+  .sidebar.collapsed { 
+    max-height: 54px; 
+    width: 100%; 
+  }
+  .sidebar-toggle-container { 
+    justify-content: center; 
+    background: var(--rojo-muy-oscuro); 
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08); 
+  }
+  .sidebar .sidebar-toggle { 
+    transform: rotate(90deg); 
+  }
+  .sidebar.collapsed .sidebar-toggle { 
+    transform: rotate(-90deg); 
+  }
+  .sidebar-nav { 
+    padding: 15px; 
+  }
+  .sidebar.collapsed .menu-title { 
+    opacity: 1; 
+    height: auto; 
+    margin: 0 12px 7px; 
+  }
+  .sidebar.collapsed .menu-text { 
+    display: block; 
+  }
+  .sidebar.collapsed .menu-item { 
+    justify-content: flex-start; 
+    padding: 10px 12px; 
+    gap: 12px; 
+  }
+  .sidebar.collapsed .menu-item::after, 
+  .sidebar.collapsed .menu-item::before { 
+    display: none !important; 
+  }
+  .dashboard-cards { 
+    grid-template-columns: 1fr; 
+  }
+  .header-user { 
+    gap: 5px; 
+  }
+  .user-account-link { 
+    display: none; 
+  }
+  .logout-button span { 
+    display: none; 
+  }
+  .logout-button { 
+    padding: 10px; 
+  }
+}
+
+@media (max-width: 480px) {
+  .login-card { 
+    padding: 1.8rem 1.5rem; 
+  }
+  .login-header h2 { 
+    font-size: 1.8rem; 
+  }
+  .form-actions { 
+    flex-direction: column; 
+  }
+  .form-actions button { 
+    width: 100%; 
+  }
 }

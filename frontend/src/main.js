@@ -17,7 +17,8 @@ import {
   Pencil,
   Trash2,
   ChevronLeft,
-  Search
+  Search,
+  TriangleAlert
 } from "lucide";
 
 /* =========================================================
@@ -69,9 +70,29 @@ function actualizarIconos() {
       Pencil,
       Trash2,
       ChevronLeft,
-      Search
+      Search,
+      TriangleAlert
     }
   });
+}
+
+/* =========================================================
+   FUNCIONES AUXILIARES UX
+   ========================================================= */
+function obtenerSaludo() {
+  const hora = new Date().getHours();
+  if (hora >= 5 && hora < 12) return "Buenos días";
+  if (hora >= 12 && hora < 20) return "Buenas tardes";
+  return "Buenas noches";
+}
+
+function mostrarPantallaDespedida() {
+  document.querySelector("#app").innerHTML = `
+    <div class="logout-screen">
+      <h2>Cerrando sesión<span class="dots"><span>.</span><span>.</span><span>.</span></span></h2>
+      <p>Vuelva pronto :-)</p>
+    </div>
+  `;
 }
 
 /* =========================================================
@@ -89,35 +110,79 @@ function mostrarLogin() {
         </div>
         
         <form id="login-form">
-          <div class="form-group">
+          <div class="form-group" id="user-group">
             <label for="usuario">Usuario</label>
             <div class="input-with-icon">
-              <i data-lucide="${iconos.usuario}"></i>
+              <i data-lucide="user"></i>
               <input type="text" id="usuario" name="usuario" placeholder="Ingrese su usuario" autocomplete="username" required>
             </div>
           </div>
           
-          <div class="form-group">
+          <div class="form-group step-hidden" id="pass-group">
             <label for="password">Contraseña</label>
             <div class="input-with-icon">
-              <i data-lucide="${iconos.candado}"></i>
-              <input type="password" id="password" name="password" placeholder="Ingrese su contraseña" autocomplete="current-risk" required>
+              <i data-lucide="lock"></i>
+              <input type="password" id="password" name="password" placeholder="Ingrese su contraseña" autocomplete="current-password" required>
             </div>
           </div>
 
-          <p id="login-error" class="error-message" hidden></p>
+          <!-- Mensaje de error oculto por defecto -->
+          <div id="login-error" class="error-message oculto"></div>
           
-          <button type="submit" id="login-button" class="primary-button login-btn">
-            <span>Iniciar sesión</span>
-          </button>
+          <div class="step-hidden" id="btn-group">
+            <button type="submit" id="login-button" class="primary-button login-btn">
+              <span>Iniciar sesión</span>
+            </button>
+          </div>
         </form>
+        
+        <div class="login-footer">
+          <p class="love">Hecho con ❤️</p>
+          <p class="secret">y con lágrimas...</p>
+          <p class="team">Benjamín Caba, Silvana Bastida, Jorge Pavez</p>
+          <p class="role">Estudiantes de Ingeniería en Informática</p>
+        </div>
       </section>
     </main>
   `;
 
   actualizarIconos();
   document.querySelector("#login-form").addEventListener("submit", iniciarSesion);
+
+  const userField = document.querySelector("#usuario");
+  const passField = document.querySelector("#password");
+  const passGroup = document.querySelector("#pass-group");
+  const btnGroup = document.querySelector("#btn-group");
+  const errorElement = document.querySelector("#login-error");
+
+  const verificarCampos = () => {
+    // Si el usuario modifica los campos, ocultamos suavemente el mensaje
+    if (!errorElement.classList.contains("oculto")) {
+      errorElement.classList.add("oculto");
+      // Vaciamos el texto 400ms después, cuando la animación ya terminó
+      setTimeout(() => { errorElement.innerHTML = ""; }, 400); 
+    }
+
+    if (userField.value.trim().length > 0) {
+      passGroup.classList.replace("step-hidden", "step-visible");
+    } else {
+      passGroup.classList.replace("step-visible", "step-hidden");
+      btnGroup.classList.replace("step-visible", "step-hidden");
+    }
+    
+    if (passField.value.trim().length > 0) {
+      btnGroup.classList.replace("step-hidden", "step-visible");
+    } else {
+      btnGroup.classList.replace("step-visible", "step-hidden");
+    }
+  };
+
+  userField.addEventListener("input", verificarCampos);
+  passField.addEventListener("input", verificarCampos);
+  
+  setTimeout(verificarCampos, 100);
 }
+
 /* =========================================================
    INICIO DE SESIÓN
    ========================================================= */
@@ -130,45 +195,39 @@ async function iniciarSesion(event) {
   const error = document.querySelector("#login-error");
   const submitBtn = document.querySelector("#login-form button[type='submit']");
 
-  // 1. Feedback visual de carga
   submitBtn.disabled = true;
-  submitBtn.textContent = "Iniciando sesión...";
+  submitBtn.innerHTML = 'Iniciando sesión<span class="dots"><span>.</span><span>.</span><span>.</span></span>';
 
   try {
-    // Ejecutamos la petición al servidor y esperamos el delay de 1 segundo en paralelo
     const [respuesta] = await Promise.all([
       fetch("http://localhost/SGR/backend/api/auth/login.php", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
+        headers: { "Content-Type": "application/json" },
         credentials: "include",
         body: JSON.stringify({ usuario, password })
       }),
-      new Promise(resolve => setTimeout(resolve, 1000)) //
+      new Promise(resolve => setTimeout(resolve, 1000)) 
     ]);
 
     const resultado = await respuesta.json();
 
     if (respuesta.ok) {
-      error.hidden = true;
+      error.classList.add("oculto"); // Aseguramos que se oculte al entrar
       mostrarDashboard();
     } else {
-      // Si falla, restauramos el botón
       submitBtn.disabled = false;
       submitBtn.textContent = "Iniciar sesión";
-      
-      error.textContent = resultado.error || "Error al iniciar sesión.";
-      error.hidden = false;
+      error.innerHTML = `<i data-lucide="triangle-alert" class="shake-icon"></i> <span>Credenciales incorrectas.</span>`;
+      actualizarIconos(); 
+      error.classList.remove("oculto"); // Despliega suavemente
     }
   } catch (err) {
     console.error(err);
-    // Si hay error de red, restauramos el botón
     submitBtn.disabled = false;
     submitBtn.textContent = "Iniciar sesión";
-    
-    error.textContent = "Error de conexión con el servidor.";
-    error.hidden = false;
+    error.innerHTML = `<i data-lucide="triangle-alert" class="shake-icon"></i> <span>Error de conexión.</span>`;
+    actualizarIconos();
+    error.classList.remove("oculto"); // Despliega suavemente
   }
 }
 
@@ -195,10 +254,7 @@ function mostrarDashboard() {
           <div class="user-icon">
             <i data-lucide="${iconos.usuario}"></i>
           </div>
-          <div class="user-info">
-            <strong>Administrador</strong>
-            <span>Administrador del sistema</span>
-          </div>
+          <a href="#" id="btn-mi-cuenta" class="user-account-link">Mi cuenta</a>
           <button id="logout-button" class="logout-button" title="Cerrar sesión">
             <i data-lucide="${iconos.cerrar}"></i>
             <span>Cerrar sesión</span>
@@ -208,7 +264,6 @@ function mostrarDashboard() {
 
       <!-- ESTRUCTURA PRINCIPAL -->
       <div class="dashboard-layout">
-        <!-- MENÚ LATERAL -->
         <aside class="sidebar">
           
           <div class="sidebar-toggle-container">
@@ -218,7 +273,6 @@ function mostrarDashboard() {
           </div>
 
           <nav class="sidebar-nav">
-            
             <div class="menu-section">
               <span class="menu-title">PRINCIPAL</span>
               <button class="menu-item active" data-module="inicio" data-tooltip="Inicio">
@@ -274,35 +328,43 @@ function mostrarDashboard() {
                 <span class="menu-text">Configuración</span>
               </button>
             </div>
-
           </nav>
         </aside>
 
-        <!-- CONTENIDO -->
         <section id="dashboard-content" class="dashboard-content"></section>
       </div>
     </main>
   `;
 
-  /* ---------- Control de la barra lateral con Memoria (localStorage) ---------- */
   const sidebar = document.querySelector(".sidebar");
   const toggleButton = document.querySelector("#toggle-sidebar");
-
-  // 1. Al cargar, verificamos si el usuario la había dejado contraída ("true")
   const sidebarGuardada = localStorage.getItem("sidebarCollapsed") === "true";
-  if (sidebarGuardada) {
+  const esMovil = window.innerWidth <= 600;
+
+  if (sidebarGuardada || esMovil) {
     sidebar.classList.add("collapsed");
   }
 
-  // 2. Al hacer clic, alternamos la clase, guardamos el estado y actualizamos íconos si es necesario
   toggleButton.addEventListener("click", () => {
     sidebar.classList.toggle("collapsed");
     const estaContraida = sidebar.classList.contains("collapsed");
     localStorage.setItem("sidebarCollapsed", estaContraida);
   });
 
-  /* ---------- Eventos generales del Dashboard ---------- */
+  /* ---------- Evento "Mi cuenta" ---------- */
+  document.querySelector("#btn-mi-cuenta").addEventListener("click", (e) => {
+    e.preventDefault();
+    const btnConfig = document.querySelector('[data-module="configuracion"]');
+    if(btnConfig) activarMenu(btnConfig);
+    mostrarModuloEnDesarrollo("Configuración");
+    if (window.innerWidth <= 600) sidebar.classList.add("collapsed");
+  });
+
+  /* ---------- Evento de Cierre de Sesión ---------- */
   document.querySelector("#logout-button").addEventListener("click", async () => {
+    mostrarPantallaDespedida();
+    await new Promise(resolve => setTimeout(resolve, 1500));
+    
     try {
       await fetch("http://localhost/SGR/backend/api/auth/logout.php", {
         method: "POST",
@@ -311,6 +373,7 @@ function mostrarDashboard() {
     } catch (e) {
       console.error("Error al cerrar sesión en el servidor", e);
     }
+    
     mostrarLogin();
   });
 
@@ -326,12 +389,14 @@ function mostrarDashboard() {
       } else {
         mostrarModuloEnDesarrollo(item.textContent.trim());
       }
+
+      if (window.innerWidth <= 600) {
+        sidebar.classList.add("collapsed");
+      }
     });
   });
 
-  /* ---------- Vista inicial ---------- */
   mostrarInicio();
-  
   actualizarIconos(); 
 }
 
@@ -347,28 +412,26 @@ function activarMenu(itemSeleccionado) {
 }
 
 /* =========================================================
-   INICIO (SINCRONIZADO)
+   INICIO (SINCRONIZADO Y CON SALUDO)
    ========================================================= */
 
 async function mostrarInicio() {
   const contenido = document.querySelector("#dashboard-content");
 
-  // Indicador visual de carga
   contenido.innerHTML = `
     <div class="page-header">
       <div>
         <span class="breadcrumb">Principal</span>
-        <h2>Inicio</h2>
+        <h2>${obtenerSaludo()}, Administrador.</h2>
         <p>Cargando información del sistema...</p>
       </div>
     </div>
   `;
 
-  // Sincronizar datos con la Base de Datos para que no muestre "0"
   try {
     const respuesta = await fetch(`${API_DELEGACIONES}/listar.php`, {
       method: "GET",
-      credentials: "include" // FUNDAMENTAL para sesiones PHP
+      credentials: "include" 
     });
 
     if (respuesta.ok) {
@@ -382,7 +445,7 @@ async function mostrarInicio() {
     <div class="page-header">
       <div>
         <span class="breadcrumb">Principal</span>
-        <h2>Inicio</h2>
+        <h2>${obtenerSaludo()}, Administrador.</h2>
         <p>Resumen general del Sistema de Gestión de Resultados.</p>
       </div>
     </div>
@@ -473,7 +536,6 @@ function mostrarModuloEnDesarrollo(nombreModulo) {
 async function mostrarDelegaciones() {
   const contenido = document.querySelector("#dashboard-content");
 
-  // Feedback inmediato al usuario
   contenido.innerHTML = `
     <div class="page-header">
       <div>
@@ -487,7 +549,7 @@ async function mostrarDelegaciones() {
   try {
     const respuesta = await fetch(`${API_DELEGACIONES}/listar.php`, {
       method: "GET",
-      credentials: "include" // FUNDAMENTAL
+      credentials: "include"
     });
     if (!respuesta.ok) {
       throw new Error("No se pudieron obtener las delegaciones.");
@@ -495,7 +557,7 @@ async function mostrarDelegaciones() {
     delegaciones = await respuesta.json();
   } catch (error) {
     console.warn("API falló, la tabla se mostrará vacía", error);
-    delegaciones = []; // Forzamos a vacío para no romper la interfaz
+    delegaciones = [];
   }
 
   contenido.innerHTML = `
@@ -571,7 +633,6 @@ async function mostrarDelegaciones() {
   </section>
   `;
 
-  /* ---------- Eventos CRUD ---------- */
   document.querySelector("#nueva-delegacion").addEventListener("click", () => mostrarFormularioDelegacion());
 
   function asignarEventosTabla() {
@@ -592,7 +653,6 @@ async function mostrarDelegaciones() {
 
   asignarEventosTabla();
 
-  /* ---------- EVENTO DEL BUSCADOR ---------- */
   const buscador = document.querySelector("#buscar-delegacion");
 
   if(buscador) {
@@ -645,7 +705,7 @@ async function mostrarDelegaciones() {
 }
 
 /* =========================================================
-   FORMULARIO DE DELEGACIÓN
+   FORMULARIO DE DELEGACIÓN (MODERNO CON PREFIJO)
    ========================================================= */
 
 function mostrarFormularioDelegacion(delegacion = null) {
@@ -653,12 +713,18 @@ function mostrarFormularioDelegacion(delegacion = null) {
   editandoId = delegacion ? delegacion.id : null;
   const titulo = delegacion ? "Editar delegación" : "Nueva delegación";
 
+  // Si editamos, quitamos la palabra "Delegación " o "Delegacion " de la interfaz para que quede limpia
+  let nombreMostrado = "";
+  if (delegacion) {
+    nombreMostrado = delegacion.nombre.replace(/^Delegaci[oó]n\s+/i, "");
+  }
+
   contenido.innerHTML = `
     <div class="page-header">
       <div>
         <span class="breadcrumb">Gestión / Delegaciones</span>
         <h2>${titulo}</h2>
-        <p>Complete la información de la delegación.</p>
+        <p>Complete la información de la unidad organizacional.</p>
       </div>
     </div>
 
@@ -666,13 +732,16 @@ function mostrarFormularioDelegacion(delegacion = null) {
       <form id="delegacion-form" novalidate>
         
         <div class="form-group">
-          <label for="nombre-delegacion">Nombre de la delegación</label>
-          <input type="text" id="nombre-delegacion" name="nombre" placeholder="Ej. Delegación Centro" value="${delegacion ? delegacion.nombre : ""}" maxlength="60">
+          <label for="nombre-delegacion">Nombre de la unidad</label>
+          <div class="input-prefix-group">
+            <span class="input-prefix">Delegación</span>
+            <input type="text" id="nombre-delegacion" name="nombre" placeholder="Centro, Las Compañías, La Antena..." value="${nombreMostrado}" maxlength="45">
+          </div>
         </div>
         
         <div class="form-group">
           <label for="responsable-delegacion">Responsable</label>
-          <input type="text" id="responsable-delegacion" name="responsable" placeholder="Nombre del responsable" value="${delegacion ? delegacion.responsable : ""}" maxlength="60">
+          <input type="text" id="responsable-delegacion" name="responsable" placeholder="Nombre completo del responsable" value="${delegacion ? delegacion.responsable : ""}" maxlength="60">
         </div>
 
         <div class="form-group">
@@ -707,15 +776,15 @@ function mostrarFormularioDelegacion(delegacion = null) {
 async function guardarDelegacion(event) {
   event.preventDefault();
 
-  const nombre = document.querySelector("#nombre-delegacion").value.trim();
+  // El usuario solo escribe el sector, ej: "Centro"
+  const nombreCrudo = document.querySelector("#nombre-delegacion").value.trim();
   const responsable = document.querySelector("#responsable-delegacion").value.trim();
   const estado = document.querySelector("#estado-delegacion").value;
 
-  // 1. Validaciones previas en el frontend (campos vacíos, longitud, formato)
-  if (!nombre || !responsable) {
+  if (!nombreCrudo || !responsable) {
     await Swal.fire({
       title: "Campos incompletos",
-      text: "Debes ingresar el nombre de la delegación y el responsable.",
+      text: "Debes ingresar el nombre y el responsable.",
       icon: "warning",
       confirmButtonText: "Aceptar",
       confirmButtonColor: "#ad0000"
@@ -723,10 +792,13 @@ async function guardarDelegacion(event) {
     return;
   }
 
-  if (nombre.length > 60 || responsable.length > 60) {
+  // Concatenamos automáticamente el prefijo para la base de datos
+  const nombreFinal = "Delegación " + nombreCrudo;
+
+  if (nombreFinal.length > 60 || responsable.length > 60) {
     await Swal.fire({
       title: "Límite excedido",
-      text: "El nombre y el responsable no pueden tener más de 60 caracteres.",
+      text: "El texto introducido es demasiado largo.",
       icon: "error",
       confirmButtonText: "Aceptar",
       confirmButtonColor: "#ad0000"
@@ -736,7 +808,7 @@ async function guardarDelegacion(event) {
 
   const regexTexto = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/;
 
-  if (!regexTexto.test(nombre) || !regexTexto.test(responsable)) {
+  if (!regexTexto.test(nombreCrudo) || !regexTexto.test(responsable)) {
     await Swal.fire({
       title: "Formato inválido",
       text: "Los campos de texto solo pueden contener letras y espacios.",
@@ -749,6 +821,21 @@ async function guardarDelegacion(event) {
 
   const eraEdicion = editandoId !== null;
 
+  // --- VALIDACIÓN UX: Evitar guardar si no hubo cambios ---
+  if (eraEdicion) {
+    const delegacionOriginal = delegaciones.find(d => d.id === editandoId);
+    if (delegacionOriginal && delegacionOriginal.nombre === nombreFinal && delegacionOriginal.responsable === responsable && delegacionOriginal.estado === estado) {
+      await Swal.fire({
+        title: "Sin cambios",
+        text: "No has realizado ninguna modificación en el registro.",
+        icon: "info",
+        confirmButtonText: "Aceptar",
+        confirmButtonColor: "#ad0000"
+      });
+      return; 
+    }
+  }
+
   try {
     let respuesta;
 
@@ -759,7 +846,7 @@ async function guardarDelegacion(event) {
         credentials: "include",
         body: JSON.stringify({
           id: editandoId,
-          nombre: nombre,
+          nombre: nombreFinal,
           responsable: responsable,
           estado: estado
         })
@@ -770,27 +857,24 @@ async function guardarDelegacion(event) {
         headers: { "Content-Type": "application/json" },
         credentials: "include",
         body: JSON.stringify({
-          nombre: nombre,
+          nombre: nombreFinal,
           responsable: responsable,
           estado: estado
         })
       });
     }
 
-    // Convertimos la respuesta a JSON independientemente de si es éxito o error
     const resultado = await respuesta.json();
 
-    // Si el servidor respondió con un código de error (400, 401, 409, 500, etc.)
     if (!respuesta.ok) {
       throw new Error(resultado.error || "Ocurrió un error desconocido en el servidor.");
     }
 
     editandoId = null;
 
-    // Alerta de éxito con el mensaje del backend o uno por defecto
     await Swal.fire({
       title: eraEdicion ? "Delegación modificada" : "Delegación creada",
-      text: resultado.mensaje || (eraEdicion ? "La delegación fue modificada correctamente." : "La delegación fue creada correctamente."),
+      text: resultado.mensaje || (eraEdicion ? "La modificación se aplicó correctamente." : "El registro se guardó correctamente."),
       icon: "success",
       confirmButtonText: "Aceptar",
       confirmButtonColor: "#ad0000"
@@ -800,7 +884,6 @@ async function guardarDelegacion(event) {
 
   } catch (error) {
     console.error("Error al guardar:", error);
-
 
     await Swal.fire({
       title: "No se pudo guardar",
@@ -852,7 +935,7 @@ async function eliminarDelegacion(id) {
     const respuesta = await fetch(`${API_DELEGACIONES}/eliminar.php`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      credentials: "include", // FUNDAMENTAL
+      credentials: "include",
       body: JSON.stringify({ id: id })
     });
 
@@ -885,28 +968,27 @@ async function eliminarDelegacion(id) {
 }
 
 /* =========================================================
-   VERIFICACIÓN DE SESIÓN INICIAL Y ARRANGUE DE LA APP
+   VERIFICACIÓN DE SESIÓN INICIAL
    ========================================================= */
 
 async function verificarSesionInicial() {
   try {
     const respuesta = await fetch("http://localhost/SGR/backend/api/auth/check-session.php", {
       method: "GET",
-      credentials: "include" // Envía la cookie de sesión para que PHP la valide
+      credentials: "include" 
     });
 
-    if (respuesta.ok) {
-      // Si el servidor responde que la sesión es válida, entramos directo al dashboard
+    const resultado = await respuesta.json();
+
+    if (respuesta.ok && resultado.autenticado) {
       mostrarDashboard();
     } else {
-      // Si no hay sesión o expiró, mostramos el login
       mostrarLogin();
     }
   } catch (error) {
     console.error("Error al verificar la sesión:", error);
-    mostrarLogin(); // Ante cualquier fallo de red, por seguridad mandamos al login
+    mostrarLogin(); 
   }
 }
 
-// Arrancamos la aplicación verificando la sesión
 verificarSesionInicial();
